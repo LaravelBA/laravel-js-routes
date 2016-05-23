@@ -1,13 +1,13 @@
-<?php namespace Fedeisas\LaravelJsRoutes\Commands;
+<?php
+namespace LaravelBA\LaravelJsRoutes\Commands;
 
-use Fedeisas\LaravelJsRoutes\Generators\RoutesJavascriptGenerator;
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
+use LaravelBA\LaravelJsRoutes\Generators\RoutesJavascriptGenerator;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class RoutesJavascriptCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -23,43 +23,38 @@ class RoutesJavascriptCommand extends Command
     protected $description = 'Generate Javascript routes file';
 
     /**
-     * Javascript generator instance.
-     *
-     * @var Fedeisas\LaravelJsRoutes\Generators\RoutesJavascriptGenerator
-     */
-    protected $generator;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(RoutesJavascriptGenerator $generator)
-    {
-        $this->generator = $generator;
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
-     * @return mixed
+     * @param RoutesJavascriptGenerator $generator
+     * @return int
      */
-    public function fire()
+    public function handle(RoutesJavascriptGenerator $generator)
     {
         $path = $this->getPath();
+        $middleware = $this->option('middleware');
+
+        if ($this->option('filter')) {
+            $this->warn("Filter option is deprecated, as Laravel 5 doesn't use filters anymore." . PHP_EOL .
+                        "Please change your code to use --middleware (or -m) instead.");
+
+            $middleware = $this->option('filter');
+        }
 
         $options = [
-            'filter' => $this->option('filter'),
-            'object' => $this->option('object'),
-            'prefix' => $this->option('prefix'),
+            'middleware' => $middleware,
+            'object'     => $this->option('object'),
+            'prefix'     => $this->option('prefix'),
         ];
 
-        if ($this->generator->make($this->option('path'), $this->argument('name'), $options)) {
-            return $this->info("Created {$path}");
+        if ($generator->make($this->option('path'), $this->argument('name'), $options)) {
+            $this->info("Created {$path}");
+
+            return 0;
         }
 
         $this->error("Could not create {$path}");
+
+        return 1;
     }
 
     /**
@@ -92,10 +87,11 @@ class RoutesJavascriptCommand extends Command
     protected function getOptions()
     {
         return [
-           ['path', 'p', InputOption::VALUE_OPTIONAL, 'Path to assets directory.', base_path()],
-           ['filter', 'f', InputOption::VALUE_OPTIONAL, 'Custom route filter.', null],
-           ['object', 'o', InputOption::VALUE_OPTIONAL, 'Custom JS object.', 'Router'],
-           ['prefix', 'prefix', InputOption::VALUE_OPTIONAL, 'Custom route prefix.', null],
+            ['path', 'p', InputOption::VALUE_OPTIONAL, 'Path to assets directory.', base_path()],
+            ['filter', 'f', InputOption::VALUE_OPTIONAL, 'DEPRECATED: Kept here for compatibility only. Use middleware flag instead.', null],
+            ['middleware', 'm', InputOption::VALUE_OPTIONAL, 'Custom route middleware.', null],
+            ['object', 'o', InputOption::VALUE_OPTIONAL, 'Custom JS object.', 'Router'],
+            ['prefix', 'prefix', InputOption::VALUE_OPTIONAL, 'Custom route prefix.', null],
         ];
     }
 }

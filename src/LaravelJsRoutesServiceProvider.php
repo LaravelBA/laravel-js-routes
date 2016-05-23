@@ -1,10 +1,10 @@
-<?php namespace Fedeisas\LaravelJsRoutes;
+<?php
+namespace LaravelBA\LaravelJsRoutes;
 
 use Illuminate\Support\ServiceProvider;
 
 class LaravelJsRoutesServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -19,12 +19,9 @@ class LaravelJsRoutesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['routes.javascript'] = $this->app->share(function ($app) {
-            $generator = new Generators\RoutesJavascriptGenerator($app['files'], $app['router']);
-            return new Commands\RoutesJavascriptCommand($generator);
-        });
-
-        $this->commands('routes.javascript');
+        $this->commands([
+            Commands\RoutesJavascriptCommand::class,
+        ]);
     }
 
     /**

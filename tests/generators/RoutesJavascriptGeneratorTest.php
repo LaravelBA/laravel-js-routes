@@ -1,120 +1,125 @@
 <?php
 
-use Fedeisas\LaravelJsRoutes\Generators\RoutesJavascriptGenerator;
-use Mockery as m;
+use Illuminate\Filesystem\Filesystem;
+use LaravelBA\LaravelJsRoutes\Generators\RoutesJavascriptGenerator;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class RoutesJavascriptGeneratorTest extends PHPUnit_Framework_TestCase
+class RoutesJavascriptGeneratorTest extends MockeryTestCase
 {
+    /**
+     * @var RoutesJavascriptGenerator
+     */
+    private $gen;
 
-    protected static $templatesDir;
+    /**
+     * @var Filesystem|\Mockery\Mock
+     */
+    private $file;
 
-    public function __construct()
-    {
-        static::$templatesDir = __DIR__.'/../../src/Way/Generators/Generators/templates';
-    }
-
-    public function tearDown()
-    {
-        m::close();
-    }
-
-    protected function getRouter()
+    protected function setUp()
     {
         $router = new Illuminate\Routing\Router(new Illuminate\Events\Dispatcher);
-        $router->get('user/{id}', ['as' => 'user.show', 'uses' => function ($id) {
-            return $id;
-        }]);
-        $router->post('user', ['as' => 'user.store', 'before' => 'js-routable', 'uses' => function ($id) {
-            return $id;
-        }]);
-        $router->get('/user/{id}/edit', ['as' => 'user.edit', 'before' => 'js-routable', 'uses' => function ($id) {
-            return $id;
-        }]);
-        $router->get('/unnamed_route', ['uses' => function ($id) {
-            return $id;
-        }]);
-        return $router;
+
+        $router->get('user/{id}', [
+            'as'   => 'user.show',
+            'uses' => function ($id) {
+                return $id;
+            },
+        ]);
+        $router->post('user', [
+            'as'         => 'user.store',
+            'middleware' => 'js-routable',
+            'uses'       => function ($id) {
+                return $id;
+            },
+        ]);
+        $router->get('/user/{id}/edit', [
+            'as'         => 'user.edit',
+            'middleware' => 'js-routable',
+            'uses'       => function ($id) {
+                return $id;
+            },
+        ]);
+        $router->get('/unnamed_route', [
+            'uses' => function ($id) {
+                return $id;
+            },
+        ]);
+
+        $template = file_get_contents(dirname(dirname(__DIR__)) . '/src/Generators/templates/Router.js');
+
+        $this->file = Mockery::mock(Filesystem::class);
+        $this->file->shouldReceive('get')->andReturn($template);
+
+        $this->gen = new RoutesJavascriptGenerator($this->file, $router);
     }
 
-    /** @test **/
+    /** @test * */
     public function it_can_generate_javascript()
     {
-        $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
-
-        $file->shouldReceive('isWritable')
-             ->once()
-             ->andReturn(true);
-
-        $file->shouldReceive('put')
-             ->once()
-             ->with('/foo/bar/routes.js', file_get_contents(__DIR__.'/stubs/javascript.txt'));
-
-        $generator = new RoutesJavascriptGenerator($file, $this->getRouter());
-        $generator->make('/foo/bar', 'routes.js', ['object' => 'Router']);
-    }
-
-    /** @test **/
-    public function it_can_generate_javascript_with_custom_object()
-    {
-        $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
-
-        $file->shouldReceive('isWritable')
-             ->once()
-             ->andReturn(true);
-
-        $file->shouldReceive('put')
-             ->once()
-             ->with('/foo/bar/routes.js', file_get_contents(__DIR__.'/stubs/custom-object.txt'));
-
-        $generator = new RoutesJavascriptGenerator($file, $this->getRouter());
-        $generator->make('/foo/bar', 'routes.js', ['object' => 'MyRouter']);
-    }
-
-    /** @test **/
-    public function it_can_generate_javascript_with_custom_filter()
-    {
-        $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
-
-        $file->shouldReceive('isWritable')
-             ->once()
-             ->andReturn(true);
-
-        $file->shouldReceive('put')
-             ->once()
-             ->with('/foo/bar/routes.js', file_get_contents(__DIR__.'/stubs/custom-filter.txt'));
-
-        $generator = new RoutesJavascriptGenerator($file, $this->getRouter());
-        $generator->make('/foo/bar', 'routes.js', ['filter' => 'js-routable', 'object' => 'Router']);
-    }
-
-    /** @test **/
-    public function it_can_generate_javascript_with_custom_prefix()
-    {
-        $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
-
-        $file->shouldReceive('isWritable')
+        $this->file->shouldReceive('isWritable')
             ->once()
             ->andReturn(true);
 
-        $file->shouldReceive('put')
+        $this->file->shouldReceive('put')
             ->once()
-            ->with('/foo/bar/routes.js', file_get_contents(__DIR__.'/stubs/custom-prefix.txt'));
+            ->with('/foo/bar/routes.js', file_get_contents(__DIR__ . '/stubs/javascript.txt'));
 
-        $generator = new RoutesJavascriptGenerator($file, $this->getRouter());
-        $generator->make('/foo/bar', 'routes.js', ['object' => 'Router', 'prefix' => 'prefix/']);
+        $this->gen->make('/foo/bar', 'routes.js', ['object' => 'Router']);
     }
 
-    /** @test **/
+    /** @test * */
+    public function it_can_generate_javascript_with_custom_object()
+    {
+        $this->file->shouldReceive('isWritable')
+            ->once()
+            ->andReturn(true);
+
+        $this->file->shouldReceive('put')
+            ->once()
+            ->with('/foo/bar/routes.js', file_get_contents(__DIR__ . '/stubs/custom-object.txt'));
+
+        $this->gen->make('/foo/bar', 'routes.js', ['object' => 'MyRouter']);
+    }
+
+    /** @test * */
+    public function it_can_generate_javascript_with_custom_middleware()
+    {
+        $this->file->shouldReceive('isWritable')
+            ->once()
+            ->andReturn(true);
+
+        $this->file->shouldReceive('put')
+            ->once()
+            ->with('/foo/bar/routes.js', file_get_contents(__DIR__ . '/stubs/custom-filter.txt'));
+
+        $this->gen->make('/foo/bar', 'routes.js', ['middleware' => 'js-routable', 'object' => 'Router']);
+    }
+
+    /** @test * */
+    public function it_can_generate_javascript_with_custom_prefix()
+    {
+        $this->file->shouldReceive('isWritable')
+            ->once()
+            ->andReturn(true);
+
+        $this->file->shouldReceive('put')
+            ->once()
+            ->with('/foo/bar/routes.js', file_get_contents(__DIR__ . '/stubs/custom-prefix.txt'));
+
+        $this->gen->make('/foo/bar', 'routes.js', ['object' => 'Router', 'prefix' => 'prefix/']);
+    }
+
+    /** @test * */
     public function if_fails_on_non_writable_path()
     {
-        $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
+        $this->file->shouldReceive('isWritable')
+            ->once()
+            ->andReturn(false);
 
-        $file->shouldReceive('isWritable')
-             ->once()
-             ->andReturn(false);
+        $this->file->shouldReceive('put')->never();
 
-        $generator = new RoutesJavascriptGenerator($file, $this->getRouter());
-        $output = $generator->make('/foo/bar', 'routes.js', ['filter' => 'js-routable', 'object' => 'Router']);
+        $output = $this->gen->make('/foo/bar', 'routes.js', ['filter' => 'js-routable', 'object' => 'Router']);
 
         $this->assertFalse($output);
     }

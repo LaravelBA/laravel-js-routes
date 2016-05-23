@@ -1,38 +1,39 @@
 {
-    "name": "fedeisas/laravel-4-js-routes",
-    "description": "Laravel 4 routes from Javascript",
+    "name": "laravelba/laravel-js-routes",
+    "description": "Access Laravel routes from your javascript files.",
     "license": "MIT",
-    "keywords": ["laravel", "generators", "artisan", "routing"],
+    "keywords": ["laravel", "generators", "javascript", "routes"],
     "authors": [
         {
             "name": "Fede Isas",
             "email": "fedeisas@hotmail.com"
+        },
+        {
+            "name": "Guido Contreras Woda",
+            "email": "guiwoda@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "~4.1",
-        "illuminate/console": "~4.1",
-        "illuminate/filesystem": "~4.1",
-        "illuminate/routing": "~4.1"
+        "illuminate/support": "^5.0",
+        "illuminate/console": "^5.0",
+        "illuminate/filesystem": "^5.0",
+        "illuminate/routing": "^5.0"
     },
     "require-dev": {
-        "illuminate/events": "~4.1",
-        "phpunit/phpunit": "3.7.27",
-        "mockery/mockery": "0.8.0",
-        "squizlabs/php_codesniffer": "1.*",
-        "jakub-onderka/php-parallel-lint": "*",
-        "jakub-onderka/php-console-highlighter": "dev-master",
-        "phpmd/phpmd": "@stable"
+        "illuminate/events": "^5.0",
+        "phpunit/phpunit": "^5.3",
+        "mockery/mockery": "^1.0.0@dev",
+        "squizlabs/php_codesniffer": "^2.6",
+        "jakub-onderka/php-parallel-lint": "^0.9",
+        "jakub-onderka/php-console-highlighter": "^0.3",
+        "phpmd/phpmd": "^2.4",
+        "fabpot/php-cs-fixer": "^1.11"
     },
     "autoload": {
         "psr-4": {
-            "Fedeisas\\LaravelJsRoutes\\": "src/"
-        },
-        "classmap": [
-            "src/Commands",
-            "src/Generators"
-        ]
+            "LaravelBA\\LaravelJsRoutes\\": "src/"
+        }
     },
     "minimum-stability": "stable"
 }
