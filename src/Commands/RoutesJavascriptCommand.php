@@ -30,7 +30,7 @@ class RoutesJavascriptCommand extends Command
      */
     public function handle(RoutesJavascriptGenerator $generator)
     {
-        $path = $this->getPath();
+        $path = $this->getPath() . '/' . $this->argument('name');
         $middleware = $this->option('middleware');
 
         if ($this->option('filter')) {
@@ -46,7 +46,7 @@ class RoutesJavascriptCommand extends Command
             'prefix'     => $this->option('prefix'),
         ];
 
-        if ($generator->make($this->option('path'), $this->argument('name'), $options)) {
+        if ($generator->make($this->getPath(), $this->argument('name'), $options)) {
             $this->info("Created {$path}");
 
             return 0;
@@ -64,7 +64,7 @@ class RoutesJavascriptCommand extends Command
      */
     protected function getPath()
     {
-        return $this->option('path') . '/' . $this->argument('name');
+        return base_path($this->option('path'));
     }
 
     /**
@@ -87,7 +87,7 @@ class RoutesJavascriptCommand extends Command
     protected function getOptions()
     {
         return [
-            ['path', 'p', InputOption::VALUE_OPTIONAL, 'Path to assets directory.', base_path()],
+            ['path', 'p', InputOption::VALUE_OPTIONAL, 'Path to assets directory.', 'resources/assets/js'],
             ['filter', 'f', InputOption::VALUE_OPTIONAL, 'DEPRECATED: Kept here for compatibility only. Use middleware flag instead.', null],
             ['middleware', 'm', InputOption::VALUE_OPTIONAL, 'Custom route middleware.', null],
             ['object', 'o', InputOption::VALUE_OPTIONAL, 'Custom JS object.', 'Router'],

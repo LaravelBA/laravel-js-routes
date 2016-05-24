@@ -41,20 +41,20 @@ class RoutesJavascriptCommandTest extends MockeryTestCase
     public function it_generated_javascript()
     {
         $this->generator->shouldReceive('make')->once()
-            ->with('/foo/bar', 'routes.js', ['middleware' => null, 'object' => 'Router', 'prefix' => null])
+            ->with('/foo/bar/resources/assets/js', 'routes.js', ['middleware' => null, 'object' => 'Router', 'prefix' => null])
             ->andReturn(true);
 
         $tester = new CommandTester($this->command);
         $tester->execute([]);
 
-        $this->assertEquals("Created /foo/bar/routes.js\n", $tester->getDisplay());
+        $this->assertEquals("Created /foo/bar/resources/assets/js/routes.js\n", $tester->getDisplay());
     }
 
     /** @test * */
     public function it_can_set_custom_path_and_custom_object_and_prefix()
     {
         $this->generator->shouldReceive('make')->once()
-            ->with('assets/js', 'myRoutes.js', ['middleware' => null, 'object' => 'MyRouter', 'prefix' => 'prefix/'])
+            ->with('/foo/bar/assets/js', 'myRoutes.js', ['middleware' => null, 'object' => 'MyRouter', 'prefix' => 'prefix/'])
             ->andReturn(true);
 
         $tester = new CommandTester($this->command);
@@ -65,7 +65,7 @@ class RoutesJavascriptCommandTest extends MockeryTestCase
             '--prefix' => 'prefix/',
         ]);
 
-        $this->assertEquals("Created assets/js/myRoutes.js\n", $tester->getDisplay());
+        $this->assertEquals("Created /foo/bar/assets/js/myRoutes.js\n", $tester->getDisplay());
     }
 
     /** @test * */
@@ -73,13 +73,13 @@ class RoutesJavascriptCommandTest extends MockeryTestCase
     {
         $this->generator->shouldReceive('make')
             ->once()
-            ->with('unexistent/path', 'myRoutes.js', ['middleware' => null, 'object' => 'Router', 'prefix' => null])
+            ->with('/foo/bar/unexistent/path', 'myRoutes.js', ['middleware' => null, 'object' => 'Router', 'prefix' => null])
             ->andReturn(false);
 
         $tester = new CommandTester($this->command);
         $tester->execute(['name' => 'myRoutes.js', '--path' => 'unexistent/path']);
 
-        $this->assertEquals("Could not create unexistent/path/myRoutes.js\n", $tester->getDisplay());
+        $this->assertEquals("Could not create /foo/bar/unexistent/path/myRoutes.js\n", $tester->getDisplay());
     }
 }
 
@@ -88,7 +88,7 @@ class RoutesJavascriptCommandTest extends MockeryTestCase
  *
  * @return string
  */
-function base_path()
+function base_path($path = null)
 {
-    return '/foo/bar';
+    return "/foo/bar/$path";
 }
