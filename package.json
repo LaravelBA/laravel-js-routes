@@ -1,17 +1,26 @@
 {
-  "name": "laravel-4-js-routes",
-  "version": "0.0.1",
-  "description": "Laravel 4 Routes from Javascript",
+  "name": "laravel-js-routes",
+  "version": "0.1.0",
+  "description": "Laravel Routes from Javascript",
   "license": "MIT",
-  "homepage": "http://github.com/fedeisas/laravel-js-routes",
-  "author": {
-    "name": "Fede Isas",
-    "url": "https://twitter.com/fedeisas",
-    "role": "Developer"
-  },
+  "homepage": "http://github.com/LaravelBA/laravel-js-routes",
+  "repository": "http://github.com/LaravelBA/laravel-js-routes",
+  "contributors": [
+    {
+      "name": "Fede Isas",
+      "url": "https://twitter.com/fedeisas",
+      "role": "Developer"
+    },
+    {
+      "name": "Guido Contreras Woda",
+      "url": "https://twitter.com/guiwoda",
+      "role": "Developer"
+    }
+  ],
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jasmine": "~0.5.2",
-    "grunt-contrib-jshint": "~0.8.0"
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jasmine": "^1.0.3",
+    "grunt-contrib-jshint": "^1.0.0"
   }
 }
