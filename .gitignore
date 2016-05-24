@@ -5,3 +5,5 @@
 composer.phar
 _SpecRunner.html
 .DS_Store
+.php_cs.cache
+composer.lock
