@@ -55,7 +55,10 @@
       return compiled;
     },
     getRootUrl: function() {
-      return window.location.protocol + '//' + window.location.host;
+      return window.location.protocol + '//' + window.location.host + this.getRootFolder();
+    },
+    getRootFolder: function () {
+      return typeof window.Laravel !== 'undefined'? (window.Laravel.rootFolder? '/' + window.Laravel.rootFolder : '') : '';
     },
     buildQueryString: function(params) {
       var ret = [];
