@@ -7,6 +7,10 @@ Laravel Javascript Routes
 [![Total Downloads](https://poser.pugx.org/LaravelBA/laravel-js-routes/downloads.png)](https://packagist.org/packages/LaravelBA/laravel-js-routes)
 [![License](https://poser.pugx.org/LaravelBA/laravel-js-routes/license.png)](https://packagist.org/packages/LaravelBA/laravel-js-routes)
 
+# DEPRECATED
+
+This package is no longer maintained. Please use https://github.com/aaronlord/laroute or any other alternative you may find!
+
 ## Why?
 We love the Laravel routing system and we often use named routes like `route('users.show', ['id' => 1])` to generate `http://domain.tld/users/1`.
 With the amazing uprising of Javascript frameworks (AngularJS, EmberJS, Backbone, etc.) it's hard to track changes on your routes between the backend and the REST calls from your Javascript.
